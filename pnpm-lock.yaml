@@ -6,7 +6,9 @@ settings:
 
 importers:
 
-  .:
+        '@autospace/sample-lib':
+        specifier: ^1.0.0
+        version: link:../../libs/sample-lib
     devDependencies:
       husky:
         specifier: ^8.0.0
