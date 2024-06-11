@@ -25,13 +25,13 @@ model User {
 
 model Admin {
   uid  String @id
-  user User   @relation(fields: [uid], references: [uid])
+  User User   @relation(fields: [uid], references: [uid])
 }
 
 model Credentials {
   uid          String   @id
   email        String   @unique
-  user         User     @relation(fields: [uid], references: [uid])
+  User         User     @relation(fields: [uid], references: [uid])
   passwordHash String
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
@@ -40,7 +40,7 @@ model Credentials {
 model AuthProvider {
   uid  String           @id
   type AuthProviderType
-  user User             @relation(fields: [uid], references: [uid])
+  User User             @relation(fields: [uid], references: [uid])
 }
 
 enum AuthProviderType {
