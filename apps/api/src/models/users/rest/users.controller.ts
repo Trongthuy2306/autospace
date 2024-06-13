@@ -1,5 +1,12 @@
 import {
-  Controller, Get, Post, Body, Patch, Param, Delete, Query
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
 } from '@nestjs/common'
 
 import { PrismaService } from 'src/common/prisma/prisma.service'
@@ -17,11 +24,10 @@ import { AllowAuthenticated, GetUser } from 'src/common/auth/auth.decorator'
 import { GetUserType } from 'src/common/types'
 import { checkRowLevelPermission } from 'src/common/auth/util'
 
-
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
   @AllowAuthenticated()
   @ApiBearerAuth()
@@ -34,7 +40,9 @@ export class UsersController {
 
   @ApiOkResponse({ type: [UserEntity] })
   @Get()
-  findAll(@Query() { skip, take, order, sortBy, search, searchBy }: UserQueryDto) {
+  findAll(
+    @Query() { skip, take, order, sortBy, search, searchBy }: UserQueryDto,
+  ) {
     return this.prisma.user.findMany({
       ...(skip ? { skip: +skip } : null),
       ...(take ? { take: +take } : null),

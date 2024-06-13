@@ -2,7 +2,12 @@ import { Resolver, Query, Mutation, Args } from '@nestjs/graphql'
 import { UsersService } from './users.service'
 import { User } from './entity/user.entity'
 import { FindManyUserArgs, FindUniqueUserArgs } from './dtos/find.args'
-import { LoginInput, LoginOutput, RegisterWithCredentialsInput, RegisterWithProviderInput } from './dtos/create-user.input'
+import {
+  LoginInput,
+  LoginOutput,
+  RegisterWithCredentialsInput,
+  RegisterWithProviderInput,
+} from './dtos/create-user.input'
 import { UpdateUserInput } from './dtos/update-user.input'
 import { checkRowLevelPermission } from 'src/common/auth/util'
 import { GetUserType } from 'src/common/types'
@@ -11,8 +16,10 @@ import { PrismaService } from 'src/common/prisma/prisma.service'
 
 @Resolver(() => User)
 export class UsersResolver {
-  constructor(private readonly usersService: UsersService,
-    private readonly prisma: PrismaService) { }
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly prisma: PrismaService,
+  ) {}
 
   @Mutation(() => User)
   async registerWithCredentials(
@@ -43,16 +50,23 @@ export class UsersResolver {
 
   @AllowAuthenticated()
   @Mutation(() => User)
-  async updateUser(@Args('updateUserInput') args: UpdateUserInput,
-    @GetUser() user: GetUserType) {
-    const userInfor = await this.prisma.user.findUnique({ where: { uid: args.uid } })
+  async updateUser(
+    @Args('updateUserInput') args: UpdateUserInput,
+    @GetUser() user: GetUserType,
+  ) {
+    const userInfor = await this.prisma.user.findUnique({
+      where: { uid: args.uid },
+    })
     checkRowLevelPermission(user, userInfor.uid)
     return this.usersService.update(args)
   }
 
   @AllowAuthenticated()
   @Mutation(() => User)
-  async removeUser(@Args() args: FindUniqueUserArgs, @GetUser() user: GetUserType) {
+  async removeUser(
+    @Args() args: FindUniqueUserArgs,
+    @GetUser() user: GetUserType,
+  ) {
     const userInfor = await this.prisma.user.findUnique(args)
     checkRowLevelPermission(user, userInfor.uid)
     return this.usersService.remove(args)
@@ -68,6 +82,4 @@ export class UsersResolver {
   whoami(@GetUser() user: GetUserType) {
     return this.usersService.findOne({ where: { uid: user.uid } })
   }
-
-
 }

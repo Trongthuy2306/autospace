@@ -16,7 +16,7 @@ export class AuthGuard implements CanActivate {
     private readonly jwtService: JwtService,
     private readonly reflector: Reflector,
     private readonly prisma: PrismaService,
-  ) { }
+  ) {}
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const ctx = GqlExecutionContext.create(context)
     const req = ctx.getContext().req
@@ -39,15 +39,19 @@ export class AuthGuard implements CanActivate {
       const payload = await this.jwtService.verify(token)
       const uid = payload.uid
       if (!uid) {
-        throw new UnauthorizedException('Invalid token. No uid present in the token!')
+        throw new UnauthorizedException(
+          'Invalid token. No uid present in the token!',
+        )
       }
       const user = await this.prisma.user.findUnique({
         where: {
-          uid
-        }
+          uid,
+        },
       })
       if (!user) {
-        throw new UnauthorizedException('Invalid token. No user present with the uid!')
+        throw new UnauthorizedException(
+          'Invalid token. No user present with the uid!',
+        )
       }
       console.log('payload', payload)
       req.user = payload
@@ -64,7 +68,6 @@ export class AuthGuard implements CanActivate {
     req: any,
     context: ExecutionContext,
   ): Promise<boolean> {
-
     const requiredRoles = this.getMetadata<Role[]>('roles', context)
     if (!requiredRoles || requiredRoles.length === 0) {
       return true
@@ -87,8 +90,7 @@ export class AuthGuard implements CanActivate {
     const [admin] = await Promise.all([
       this.prisma.admin.findUnique({ where: { uid } }),
       // Add promises for other role models here
-    ]
-    )
+    ])
     admin && roles.push('admin')
 
     return roles
